@@ -1,5 +1,4 @@
 'use client';
-
 import { Location } from '@/components/Location';
 import Medicines from '@/components/Medicines';
 import SearchBox from '@/components/SearchBox';

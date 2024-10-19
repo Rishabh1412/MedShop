@@ -7,28 +7,52 @@ const SearchBox = () => {
     const [suggestions, setSuggestions] = useState([]);
     const [history, setHistory] = useState([]);
 
-    // Fetch search suggestions
+    // Fetch search suggestions with headers
     useEffect(() => {
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
         if (searchQuery.length > 0) {
-            axios.get(`http://localhost:5000/search-suggestions?query=${searchQuery}`)
+            axios.get(`http://localhost:5000/search/search-suggestions?query=${searchQuery}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Add the token to the headers
+                    'Content-Type': 'application/json',
+                },
+            })
                 .then(response => {
                     setSuggestions(response.data.suggestions);
+                })
+                .catch(error => {
+                    console.error('Error fetching suggestions:', error);
                 });
         } else {
             setSuggestions([]);
         }
     }, [searchQuery]);
 
-    // Fetch previous search history (5 items)
+    // Fetch previous search history with headers
     useEffect(() => {
-        axios.get('http://localhost:5000/search-history')
+        const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+        axios.get('http://localhost:5000/search/search-history', {
+            headers: {
+                'Authorization': `Bearer ${token}`, // Add the token to the headers
+                'Content-Type': 'application/json',
+            },
+        })
             .then(response => {
                 setHistory(response.data.history);
+            })
+            .catch(error => {
+                console.error('Error fetching search history:', error);
             });
     }, []);
 
+    // Handle input changes
     const handleInputChange = (e) => {
         setSearchQuery(e.target.value);
+    };
+
+    // Handle clicks on suggestions or history items
+    const handleItemClick = (value) => {
+        setSearchQuery(value);
     };
 
     const highlightMatch = (text, query) => {
@@ -62,13 +86,15 @@ const SearchBox = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
                     </svg>
                 </Button>
-                <div className="suggestions-box z-10 shadow-md absolute bg-slate-100 rounded-md min min-w-72 left-8 top-12 items-center justify-center">
+                <div className="suggestions-box z-30 shadow-md absolute bg-[#f5f5f5] rounded-md min min-w-72 flex-col left-8 top-12 items-center justify-center">
                     {history.length > 0 ? (
-                        <div>
+                        <div className='px-2 lg:px-4 '>
                             <h3>Previous Searches:</h3>
-                            <ul>
+                            <ul className='py-2 px-3'>
                                 {history.map((item, index) => (
-                                    <li key={index}>{highlightMatch(item.search_query, searchQuery)}</li>
+                                    <li key={index} onClick={() => handleItemClick(item.search_query)} className="cursor-pointer">
+                                        {highlightMatch(item.search_query, searchQuery)}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
@@ -81,11 +107,13 @@ const SearchBox = () => {
                     )}
 
                     {suggestions.length > 0 && (
-                        <div>
-                            <h3>Suggestions:</h3>
-                            <ul>
+                        <div className='px-2 lg:px-4 py-2'>
+                            <h3 className='font-semibold'>Suggestions:</h3>
+                            <ul className='py-2'>
                                 {suggestions.map((item, index) => (
-                                    <li key={index}>{highlightMatch(item.name, searchQuery)}</li>
+                                    <li key={index} onClick={() => handleItemClick(item.name)} className="cursor-pointer py-1 px-3 hover:bg-lime-50 hover:rounded-sm hover:border flex justify-start items-center hover:border-green-700">
+                                        {highlightMatch(item.name, searchQuery)}
+                                    </li>
                                 ))}
                             </ul>
                         </div>

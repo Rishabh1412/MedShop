@@ -26,8 +26,8 @@ const Medcard = ({ medicine }) => {
                             </Badge>
                         </h2>
                         <div className='flex items-center'>
-                            <div className='bg-yellow-100 w-fit px-2 py-1 rounded-sm flex items-center justify-center'><p className='text-yellow-400 font-semibold text-sm flex items-center'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
-                                <path fill-rule="evenodd" d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L7.998 12.08l-3.135 1.915a.75.75 0 0 1-1.12-.814l.852-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.663-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z" clip-rule="evenodd" />
+                            <div className='bg-yellow-100 w-fit px-2 py-1 rounded-sm flex items-center justify-center'><p className='text-yellow-400 font-semibold text-sm flex items-center'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                <path fillRule="evenodd" d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L7.998 12.08l-3.135 1.915a.75.75 0 0 1-1.12-.814l.852-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.663-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z" clipRule="evenodd" />
                             </svg>
 
                                 &nbsp;<span className='text-neutral-900'>{medicine.rating}</span></p>
@@ -68,10 +68,10 @@ const Medcard = ({ medicine }) => {
                         src={'/medimg.jpeg'}
                         height={100}
                         width={100}
-                        alt="Medicine Image"
+                        alt="Medicine_Image"
                         className=' rounded-lg min-h-full w-full object-contain lg:object-cover' // Added rounded corners and object-cover for image scaling
                     />
-                    <Button className=' bg-green-500 shadow-sm translate-y-3 justify-center flex w-2/3 left-1/2 hover:shadow-md hover:bg-white hover:text-green-500 -translate-x-1/2 rounded-[7px] text-white font-bold text-md bottom-0 absolute'>ADD&nbsp;<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" class="size-4">
+                    <Button className=' bg-green-500 shadow-sm translate-y-3 justify-center flex w-2/3 left-1/2 hover:shadow-md hover:bg-white hover:text-green-500 -translate-x-1/2 rounded-[7px] text-white font-bold text-md bottom-0 absolute'>ADD&nbsp;<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" className="size-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
 </Button>

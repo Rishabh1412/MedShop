@@ -23,7 +23,16 @@ import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
-} from "@/components/ui/hover-card"
+} from "@/components/ui/hover-card";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+
 
 // Example locations (saved by user)
 
@@ -101,7 +110,18 @@ export function Location() {
                 </div>
                 <div className='lg:hidden flex'>
                     <HoverCard>
-                        <HoverCardTrigger><div className='w-12 h-12 rounded-full bg-black' ></div></HoverCardTrigger>
+                        <Sheet>
+                            <SheetTrigger><HoverCardTrigger><div className='w-12 h-12 rounded-full bg-black' ></div></HoverCardTrigger></SheetTrigger>
+                            <SheetContent>
+                                <SheetHeader>
+                                    <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                    <SheetDescription>
+                                        This action cannot be undone. This will permanently delete your account
+                                        and remove your data from our servers.
+                                    </SheetDescription>
+                                </SheetHeader>
+                            </SheetContent>
+                        </Sheet>
                         <HoverCardContent>
                             <p className=' font-semibold'>Username</p>
                             <p className='text-gray-900 text-sm'>email@gmail.com</p>

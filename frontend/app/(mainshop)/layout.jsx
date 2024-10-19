@@ -230,9 +230,9 @@ const Layout = ({ children }) => {
                     </Link>
                     
                 </div>
-                <div className='py-2 px-2 rounded-full w-full justify-center items-center mb-4 flex flex-col gap-2'>
-                    <p className='text-gray-500 text-xs w-full flex justify-start tracking-widest'>PROFILE</p>
-                    <HoverCard>
+                <div className='py-2 px-2 rounded-full w-full justify-center items-center mb-4 flex gap-2'>
+                    <p className='text-gray-700 font-semibold text-xs w-full flex justify-start tracking-widest order-2'>PROFILE</p>
+                    <HoverCard className='order-1'>
                         <HoverCardTrigger>
                             <div className='flex items-center gap-1 justify-around'>
                                 <div className='w-8 h-8 rounded-full bg-black'></div>
@@ -240,9 +240,7 @@ const Layout = ({ children }) => {
                             </div>
                         </HoverCardTrigger>
                         <HoverCardContent>
-                            <p className='font-semibold'>{user.username}</p> {/* Username */}
-                            <p className='text-gray-900 text-sm'>{user.email}</p> {/* Email */}
-                            <p className='text-xs text-gray-500'>You can edit your profile from here.</p>
+                            <p className='text-xs text-gray-600'>You can edit your profile from here.</p>
                         </HoverCardContent>
                     </HoverCard>
 

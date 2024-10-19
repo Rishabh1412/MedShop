@@ -54,6 +54,20 @@ class Shop(db.Model):
     medicines = db.relationship('Medicine', backref='shop', lazy=True)  # Relationship with medicines
     orders = db.relationship('Order', backref='shop', lazy=True)  # Relationship with orders
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'shop_name': self.shop_name,
+            'location': self.location,
+            'pincode': self.pincode,
+            'city': self.city,
+            'state': self.state,
+            'rating': self.rating,
+            'image': self.image
+        }
+    
+    
+
 
 class Medicine(db.Model):
     __tablename__ = 'medicines'

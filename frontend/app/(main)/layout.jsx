@@ -8,7 +8,14 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card"
 import { Button } from '@/components/ui/button';
-
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
 
 
 const Layout = ({ children }) => {
@@ -229,15 +236,27 @@ const Layout = ({ children }) => {
                     </div>
                     <div className='py-2 px-2 rounded-full w-full justify-center items-center mb-4 flex flex-col gap-2'>
                         <p className='text-gray-500 text-xs w-full flex justify-start tracking-widest'>PROFILE</p>
-                        <HoverCard>
-                            <HoverCardTrigger><div className='flex items-center gap-1 justify-around'><div className='w-8 h-8 rounded-full bg-black' ></div><p className='font-semibold text-black text-sm truncate'>Username</p></div></HoverCardTrigger>
-                            <HoverCardContent>
-                                <p className=' font-semibold'>Username</p>
-                                <p className='text-gray-900 text-sm'>email@gmail.com</p>
-                                <p className='text-xs text-gray-500'>You can edit your profile from here.</p>
-                            </HoverCardContent>
-                        </HoverCard>
-                        <Button className='bg-red-400 rounded-sm p-2' >LogOut</Button>
+                        
+                        <Sheet>
+                            <HoverCard>
+                                <SheetTrigger><HoverCardTrigger><div className='flex items-center gap-1 justify-around'><div className='w-8 h-8 rounded-full bg-black' ></div><p className='font-semibold text-black text-sm truncate'>Username</p></div></HoverCardTrigger></SheetTrigger>
+                                <HoverCardContent>
+                                    <p className='text-xs text-gray-500'>You can edit your profile from here.</p>
+                                </HoverCardContent>
+                            </HoverCard>
+                            <SheetContent>
+                                <SheetHeader>
+                                    <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                    <SheetDescription>
+                                        This action cannot be undone. This will permanently delete your account
+                                        and remove your data from our servers.
+                                    </SheetDescription>
+                                </SheetHeader>
+                            </SheetContent>
+                        </Sheet>
+
+
+                        <Button className='bg-red-400 rounded-sm p-2'>LogOut</Button>
                     </div>
 
                 </section>
