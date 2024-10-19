@@ -3,6 +3,16 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { Badge } from "@/components/ui/badge"
 import { Button } from './ui/button';
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
 
 
 const Medcard = ({ medicine }) => {
@@ -19,30 +29,45 @@ const Medcard = ({ medicine }) => {
                 <div className="lg:ml-4 ml-0 p-2 w-2/3 min-h-full"> {/* Removed relative positioning from here */}
                     
                     <div className='flex-col justify-between'>
+                        <Drawer>
+                            <DrawerTrigger>
+                                <h2 className="text-lg font-bold flex gap-2 items-center">{medicine.name}
+                                    <Badge variant="" className=" bg-neutral-800 py-1 px-3 text-white text-xs font-semibold hover:bg-neutral-800 cursor-pointer"> {/* Adjusted position to ensure it doesn't overlap with other elements */}
+                                        {medicine.category}
+                                    </Badge>
+                                </h2>
+                                <div className='flex items-center'>
+                                    <div className='bg-yellow-100 w-fit px-2 py-1 rounded-sm flex items-center justify-center'><p className='text-yellow-400 font-semibold text-sm flex items-center'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                        <path fillRule="evenodd" d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L7.998 12.08l-3.135 1.915a.75.75 0 0 1-1.12-.814l.852-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.663-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z" clipRule="evenodd" />
+                                    </svg>
 
-                        <h2 className="text-lg font-bold flex gap-2 items-center">{medicine.name}
-                            <Badge variant="" className=" bg-neutral-800 py-1 px-3 text-white text-xs font-semibold hover:bg-neutral-800 cursor-pointer"> {/* Adjusted position to ensure it doesn't overlap with other elements */}
-                            {medicine.category}
-                            </Badge>
-                        </h2>
-                        <div className='flex items-center'>
-                            <div className='bg-yellow-100 w-fit px-2 py-1 rounded-sm flex items-center justify-center'><p className='text-yellow-400 font-semibold text-sm flex items-center'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                                <path fillRule="evenodd" d="M8 1.75a.75.75 0 0 1 .692.462l1.41 3.393 3.664.293a.75.75 0 0 1 .428 1.317l-2.791 2.39.853 3.575a.75.75 0 0 1-1.12.814L7.998 12.08l-3.135 1.915a.75.75 0 0 1-1.12-.814l.852-3.574-2.79-2.39a.75.75 0 0 1 .427-1.318l3.663-.293 1.41-3.393A.75.75 0 0 1 8 1.75Z" clipRule="evenodd" />
-                            </svg>
-
-                                &nbsp;<span className='text-neutral-900'>{medicine.rating}</span></p>
-                            </div>&nbsp;<span className='text-gray-500 text-sm'>14 ratings</span>
-                        </div>
-                        <h3 className='text-md text-neutral-900 font-semibold'><span className='font-semibold text-green-600'>Price: </span>₹{medicine.price}</h3>
-                        <div className='flex gap-2 justify-between items-center'>
-                            <div className='flex flex-col h-full justify-between'>
-                                <div className='lg:max-w-60 max-w-48 py-2 rounded-sm'>
-                                    <p className="text-sm text-gray-700">{medicine.description}</p>
+                                        &nbsp;<span className='text-neutral-900'>{medicine.rating}</span></p>
+                                    </div>&nbsp;<span className='text-gray-500 text-sm'>14 ratings</span>
                                 </div>
-                                <p className='text-gray-500 text-sm mt-2'>{medicine.manufacturer}</p>
-                            </div>
+                                <h3 className='text-md text-neutral-900 font-semibold'><span className='font-semibold text-green-600'>Price: </span>₹{medicine.price}</h3>
+                                <div className='flex gap-2 justify-between items-center'>
+                                    <div className='flex flex-col h-full justify-between'>
+                                        <div className='lg:max-w-60 max-w-48 py-2 rounded-sm'>
+                                            <p className="text-sm text-gray-700">{medicine.description}</p>
+                                        </div>
+                                        <p className='text-gray-500 text-sm mt-2'>{medicine.manufacturer}</p>
+                                    </div>
 
-                        </div>
+                                </div>
+                            </DrawerTrigger>
+                            <DrawerContent>
+                                <DrawerHeader>
+                                    <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                                    <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                                </DrawerHeader>
+                                <DrawerFooter>
+                                    <Button>Submit</Button>
+                                    <DrawerClose>
+                                        <Button variant="outline">Cancel</Button>
+                                    </DrawerClose>
+                                </DrawerFooter>
+                            </DrawerContent>
+                        </Drawer>
                         <div
                             onClick={handleImportantClick} // Attach the click handler
                             className={`flex gap-3 text-sm border w-fit px-3 cursor-pointer rounded-sm mt-2 items-center py-2 
@@ -73,8 +98,8 @@ const Medcard = ({ medicine }) => {
                     />
                     <Button className=' bg-green-500 shadow-sm translate-y-3 justify-center flex w-2/3 left-1/2 hover:shadow-md hover:bg-white hover:text-green-500 -translate-x-1/2 rounded-[7px] text-white font-bold text-md bottom-0 absolute'>ADD&nbsp;<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" className="size-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-</Button>
+                        </svg>
+                    </Button>
                 </div>
                 
             </div>

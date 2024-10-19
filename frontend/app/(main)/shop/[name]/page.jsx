@@ -4,12 +4,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { Skeleton } from "@/components/ui/skeleton"
+
 import axios from 'axios';
 
 const ShopPage = () => {
     const router = useRouter();
     const params= useParams(); // Get shop_name from query params
     const [shopDet, setShopdet] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     console.log(params.name);
     useEffect(() => {
         const fetchData = async () => {
@@ -29,6 +32,8 @@ const ShopPage = () => {
                 setShopdet(response.data.shop_data); // Handle your shop data
             } catch (error) {
                 console.error('Error fetching shop data:', error);
+            } finally {
+                setIsLoading(false); // Stop loading after data is fetched
             }
         };
 
@@ -56,8 +61,9 @@ const ShopPage = () => {
                     </Link>
                     <div className='flex items-end justify-between bottom-24 px-4 pb-0 absolute w-full'>
                         <div>
-                            <p className='font-bold text-5xl py-3'>{shopDet.shop_name || 'Shop'}</p>
-                            <p className='text-sm'>Area, Location, State, Jharkhand 827013</p>
+                            {isLoading ? <Skeleton className="w-40 h-8" /> : <p className='font-bold text-5xl py-3'>{`${shopDet.shop_name || 'Shop'}`}</p>}
+                            {isLoading ? <Skeleton className="w-32 h-4" /> : <p className='font-semibold text-sm px-1'>{shopDet.location}, {shopDet.city}, {shopDet.state}</p> }
+
                         </div>
                         <div className='py-3 text-5xl'>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.2" stroke="currentColor" className="size-10">
