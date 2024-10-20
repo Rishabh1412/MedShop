@@ -5,11 +5,47 @@ import SearchBox from '@/components/SearchBox';
 import Shops from '@/components/Shops';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton'; 
 
 export default function HomePage() {
     const router = useRouter();
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [meds, setMeds] = useState([]);  // Medicines state
+    const [loading, setLoading] = useState(true);  // Loading state for medicines
+
+    // Fetch random 10 medicines
+    useEffect(() => {
+        const fetchMeds = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/display-meds', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setMeds(data || []); // Set medicines data from API
+                } else {
+                    throw new Error('Failed to fetch medicines.');
+                }
+            } catch (err) {
+                console.error('Error fetching medicines:', err);
+            } finally {
+                setLoading(false); // End loading state
+            }
+        };
+
+        fetchMeds();
+    }, [router]);
 
     const handleLogout = async () => {
         try {
@@ -47,26 +83,38 @@ export default function HomePage() {
                         <div className="w-full py-4 lg:w-1/2">
                             <SearchBox />
                         </div>
-                        
                     </div>
-                    
                 </div>
+
                 <div className='max-w-full h-4/5 bg-white lg:m-3 mt-3 lg:pb-0 pb-24 rounded-md py-4 lg:px-4 px-2'>
                     <p className='text-sm font-semibold text-neutral-700 tracking-[3px] px-2 flex items-center mb-4'>
                         TOP RATED NEAR YOU
                         <span className='flex-grow border-b border-neutral-300 ml-2'></span>
                     </p>
-                    
-                    <Shops/>
+
+                    <Shops />
+
                     <p className='text-sm font-semibold text-neutral-700 tracking-[3px] px-2 flex mt-2 items-center mb-4'>
                         MEDICINES
                         <span className='flex-grow border-b border-neutral-300 ml-2'></span>
                     </p>
 
-                    <Medicines/>
+                    {loading ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                            {/* Skeletons for loading state */}
+                            {[...Array(10)].map((_, index) => (
+                                <div key={index} className="p-4 border rounded shadow">
+                                    <Skeleton className="w-full h-32 mb-4" />
+                                    <Skeleton className="w-3/4 h-6 mb-2" />
+                                    <Skeleton className="w-1/2 h-6" />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <Medicines medicine_data={meds} />
+                    )}
                 </div>
             </div>
-
         </>
     );
 }

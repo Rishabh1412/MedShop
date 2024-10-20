@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from .models import User, Shopkeeper, SearchHistory, Shop, Medicine
+from .models import User, Shopkeeper, SearchHistory, Shop, Medicine,Wishlist,Bookmark
 from .auth import register_user, login_user, register_shopkeeper, login_shopkeeper
 from . import db
 from functools import wraps
@@ -356,15 +356,56 @@ def update_medicine_stock(medicine_id):
 @jwt_required()
 @user_required
 def get_all_shop():
+    user_id=get_jwt_identity()['id']
     try:
         shops=[]
         all_shops = Shop.query.order_by(func.random()).all()
+        wishlisted_shop_ids = (
+            db.session.query(Bookmark.shop_id)
+            .filter_by(user_id=user_id)
+            .all()
+        )
+        
+        # Convert list of tuples to a set of shop IDs for quick lookup
+        wishlisted_shop_ids = set([shop_id for (shop_id,) in wishlisted_shop_ids])
+
+        # Add wishlisted property to each shop
         for shop in all_shops:
-            shops.append(shop.to_dict())
+            shop_dict = shop.to_dict()
+            shop_dict['wishlisted'] = 1 if shop.id in wishlisted_shop_ids else 0
+            shops.append(shop_dict)
+
         return jsonify(shops), 200
+    
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
+@main_blueprint.route('/display-meds',methods=['GET'])
+@jwt_required()
+@user_required
+def display_meds():
+    try:
+        random_meds = Medicine.query.order_by(func.random()).limit(10).all()
+        
+        # Manually convert each medicine to a dictionary
+        meds = []
+        for med in random_meds:
+            med_dict = {
+                'id': med.id,
+                'name': med.name,
+                'description': med.description,
+                'quantity':med.quantity,
+                'rating':med.rating,
+                'ordered':med.no_of_times_ordered,
+                'price': med.price,
+                
+            }
+            meds.append(med_dict)
+
+        return jsonify(meds), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @main_blueprint.route('/get-shop-data', methods=['GET'])
 @jwt_required()
@@ -378,6 +419,8 @@ def get_shop_data():
         shop = Shop.query.filter_by(shop_name=shop_name).first()
         if not shop:
             return jsonify({'message': 'Shop not found'}), 404
+        
+        wishlisted = Bookmark.query.filter_by(user_id=get_jwt_identity()['id'], shop_id=shop.id).first() is not None
 
         medicines = Medicine.query.filter_by(shop_id=shop.id).all()
         medicines_list = [
@@ -402,6 +445,7 @@ def get_shop_data():
             'state': shop.state,
             'rating': shop.rating,
             'image': shop.image,
+            'wishlisted':wishlisted,
             'medicines': medicines_list
         }
 
@@ -410,3 +454,38 @@ def get_shop_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@main_blueprint.route('/toggle-wishlist', methods=['POST'])
+@jwt_required()
+@user_required
+def toggle_wishlist():
+    user_id = get_jwt_identity()['id']
+    data = request.get_json()
+    shop_id = data.get('shop_id')
+    wishlisted = data.get('wishlisted')
+
+    try:
+        wishlist_entry = Bookmark.query.filter_by(user_id=user_id, shop_id=shop_id).first()
+
+        if wishlisted:
+            if not wishlist_entry:
+                # Add to wishlist
+                new_entry = Bookmark(user_id=user_id, shop_id=shop_id)
+                db.session.add(new_entry)
+                print("Shop added to wishlist.")
+            else:
+                print("Shop is already in the wishlist.")
+        else:
+            if wishlist_entry:
+                # Remove from wishlist
+                db.session.delete(wishlist_entry)
+                print("Shop removed from wishlist.")
+            else:
+                print("Shop not found in wishlist, nothing to delete.")
+
+        db.session.commit()
+        return jsonify({"message": "Wishlist updated successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()  # Roll back the session in case of error
+        print(f"Error updating wishlist: {str(e)}")
+        return jsonify({"error": "An error occurred while updating the wishlist."}), 500

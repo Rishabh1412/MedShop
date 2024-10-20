@@ -15,6 +15,9 @@ class User(db.Model):
     locations = db.relationship('UserDeliveryLocation', backref='user_locations', lazy=True)
     search_history = db.relationship('SearchHistory', backref='user_history', lazy=True)
 
+    wishlist = db.relationship('Wishlist', backref='owner', lazy=True)
+    bookmarks = db.relationship('Bookmark', backref='userbook', lazy=True)
+
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
@@ -67,8 +70,6 @@ class Shop(db.Model):
         }
     
     
-
-
 class Medicine(db.Model):
     __tablename__ = 'medicines'
     id = db.Column(db.Integer, primary_key=True)
@@ -129,3 +130,25 @@ class SearchHistory(db.Model):
 
     # Relationship with users
     user = db.relationship('User', backref='search_history_entries')
+
+class Wishlist(db.Model):
+    __tablename__ = 'wishlists'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User who added the medicine to the wishlist
+    medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.id'), nullable=False)  # Medicine in the wishlist
+
+    # Relationships
+    user = db.relationship('User', backref='user_wishlist', lazy=True)
+    medicine = db.relationship('Medicine', backref='wishlisted_by', lazy=True)
+
+
+class Bookmark(db.Model):
+    __tablename__ = 'bookmarks'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User who bookmarked the shop
+    shop_id = db.Column(db.Integer, db.ForeignKey('shops.id'), nullable=False)  # Bookmarked shop
+
+    # Relationships
+    user = db.relationship('User', backref='user_bookmarks', lazy=True)
+    shop = db.relationship('Shop', backref='bookmarked_by', lazy=True)
+
