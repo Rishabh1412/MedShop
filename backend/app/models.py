@@ -23,6 +23,12 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+    
+    def get_wishlist(self):
+        return [item.medicine.to_dict() for item in self.wishlist]
+    
+    def get_bookmarks(self):
+        return [item.shop.to_dict() for item in self.bookmarks]
 
 
 class Shopkeeper(db.Model):
@@ -57,9 +63,15 @@ class Shop(db.Model):
     medicines = db.relationship('Medicine', backref='shop', lazy=True)  # Relationship with medicines
     orders = db.relationship('Order', backref='shop', lazy=True)  # Relationship with orders
 
+    @staticmethod
+    def search_by_name(name):
+        return Shop.query.filter(Shop.shop_name.ilike(f"%{name}%")).all()
+    
+
     def to_dict(self):
         return {
             'id': self.id,
+            'type':"shop",
             'shop_name': self.shop_name,
             'location': self.location,
             'pincode': self.pincode,
@@ -84,6 +96,24 @@ class Medicine(db.Model):
     # Relationship with order items
     order_items = db.relationship('OrderItem', backref='medicine', lazy=True)
 
+    @staticmethod
+    def search_by_name(name):
+        return Medicine.query.filter(Medicine.name.ilike(f"%{name}%")).all()
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'type':"medicine",
+            'name': self.name,
+            'quantity': self.quantity,
+            'rating': self.rating,
+            'description': self.description,
+            'no_of_times_ordered': self.no_of_times_ordered,
+            'price': self.price,
+            'shop_id': self.shop_id,
+            'image': self.image
+        }
+    
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -152,3 +182,13 @@ class Bookmark(db.Model):
     user = db.relationship('User', backref='user_bookmarks', lazy=True)
     shop = db.relationship('Shop', backref='bookmarked_by', lazy=True)
 
+    @staticmethod
+    def add_bookmark(user_id, shop_id):
+        bookmark = Bookmark(user_id=user_id, shop_id=shop_id)
+        db.session.add(bookmark)
+        db.session.commit()
+
+    @staticmethod
+    def remove_bookmark(user_id, shop_id):
+        Bookmark.query.filter_by(user_id=user_id, shop_id=shop_id).delete()
+        db.session.commit()

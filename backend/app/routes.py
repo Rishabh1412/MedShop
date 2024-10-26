@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from .models import User, Shopkeeper, SearchHistory, Shop, Medicine,Wishlist,Bookmark
+from .models import User, Shopkeeper, SearchHistory, Shop, Medicine, Wishlist,Bookmark
 from .auth import register_user, login_user, register_shopkeeper, login_shopkeeper
 from . import db
 from functools import wraps
@@ -489,3 +489,23 @@ def toggle_wishlist():
         db.session.rollback()  # Roll back the session in case of error
         print(f"Error updating wishlist: {str(e)}")
         return jsonify({"error": "An error occurred while updating the wishlist."}), 500
+
+
+@main_blueprint.route('/fetchdata', methods=['GET'])
+@jwt_required()
+@user_required
+def fetch_data():
+    search_term = request.args.get('query', '').strip()
+
+    results = {
+        "shops": [],
+        "medicines": [],
+    }
+
+    if search_term:  
+        results['shops'] = [shop.to_dict() for shop in Shop.search_by_name(search_term)]  # Convert to dict
+        results['medicines'] = [medicine.to_dict() for medicine in Medicine.search_by_name(search_term)]  # Convert to dict
+    else:
+        return jsonify({"error": "Search term cannot be empty"}), 400  
+
+    return jsonify(results) 
