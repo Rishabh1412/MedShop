@@ -10,6 +10,7 @@ from sqlalchemy import func
 main_blueprint = Blueprint('main', __name__)
 search_blueprint = Blueprint('search', __name__)
 
+
 # Search suggestions route
 @search_blueprint.route('/search-suggestions', methods=['GET'])
 @jwt_required()
@@ -509,3 +510,4 @@ def fetch_data():
         return jsonify({"error": "Search term cannot be empty"}), 400  
 
     return jsonify(results) 
+

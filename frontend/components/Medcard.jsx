@@ -13,6 +13,7 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
+import Addcart from './Addcart';
 
 
 const Medcard = ({ medicine }) => {
@@ -96,10 +97,7 @@ const Medcard = ({ medicine }) => {
                         alt="Medicine_Image"
                         className=' rounded-lg min-h-full w-full object-contain lg:object-cover' // Added rounded corners and object-cover for image scaling
                     />
-                    <Button className=' bg-green-500 shadow-sm translate-y-3 justify-center flex w-2/3 left-1/2 hover:shadow-md hover:bg-white hover:text-green-500 -translate-x-1/2 rounded-[7px] text-white font-bold text-md bottom-0 absolute'>ADD&nbsp;<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.3" stroke="currentColor" className="size-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </Button>
+                    <Addcart/>
                 </div>
                 
             </div>

@@ -2,6 +2,8 @@ from . import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
+import uuid 
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -192,3 +194,73 @@ class Bookmark(db.Model):
     def remove_bookmark(user_id, shop_id):
         Bookmark.query.filter_by(user_id=user_id, shop_id=shop_id).delete()
         db.session.commit()
+
+
+
+class CartItem(db.Model):
+    __tablename__ = 'cart_items'
+    id =  db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # The user who owns the cart
+    medicine_id = db.Column(db.Integer, db.ForeignKey('medicines.id'), nullable=False)  # The medicine in the cart
+    quantity = db.Column(db.Integer, nullable=False, default=1)  # Quantity of the medicine
+    price_per_unit = db.Column(db.Float, nullable=False)  # Price at the time of adding
+    total_price = db.Column(db.Float, nullable=False)  # Calculated as quantity * price_per_unit
+
+    user = db.relationship('User', backref='cart_items', lazy=True)
+    medicine = db.relationship('Medicine', backref='in_carts', lazy=True)
+
+    @staticmethod
+    def add_item(user_id, medicine_id, quantity, price_per_unit):
+        # Check if the item already exists in the cart for this user
+        cart_item = CartItem.query.filter_by(user_id=user_id, medicine_id=medicine_id).first()
+        if cart_item:
+            # Update the quantity and total price
+            cart_item.quantity += quantity
+            cart_item.total_price = cart_item.quantity * cart_item.price_per_unit
+        else:
+            # Create a new item if it doesn’t exist
+            total_price = quantity * price_per_unit
+            cart_item = CartItem(
+                user_id=user_id,
+                medicine_id=medicine_id,
+                quantity=quantity,
+                price_per_unit=price_per_unit,
+                total_price=total_price
+            )
+            db.session.add(cart_item)
+        db.session.commit()
+
+    @staticmethod
+    def remove_item(user_id, medicine_id):
+        CartItem.query.filter_by(user_id=user_id, medicine_id=medicine_id).delete()
+        db.session.commit()
+
+    @staticmethod
+    def plus_item(user_id, medicine_id, quantity):
+        cart_item = CartItem.query.filter_by(user_id=user_id, medicine_id=medicine_id).first()
+        if cart_item:
+            cart_item.quantity = cart_item.quantity+1
+            cart_item.total_price = quantity * cart_item.price_per_unit
+            db.session.commit()
+    
+    @staticmethod
+    def minus_item(user_id, medicine_id, quantity):
+        cart_item = CartItem.query.filter_by(user_id=user_id, medicine_id=medicine_id).first()
+        if cart_item:
+            cart_item.quantity = cart_item.quantity-1
+            cart_item.total_price = quantity * cart_item.price_per_unit
+            db.session.commit()
+
+    @staticmethod
+    def get_cart_items(user_id):
+        return CartItem.query.filter_by(user_id=user_id).all()
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'medicine_id': self.medicine_id,
+            'quantity': self.quantity,
+            'price_per_unit': self.price_per_unit,
+            'total_price': self.total_price
+        }
