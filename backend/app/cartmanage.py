@@ -21,8 +21,8 @@ def view_cart():
 
 
 @cart_blueprint.route('/cart-items/add', methods=['POST'])
-@user_required
 @jwt_required()
+@user_required
 def add_cart_item():
     """Add an item to the cart."""
     data = request.json
@@ -42,8 +42,8 @@ def add_cart_item():
 
 
 @cart_blueprint.route('/cart-items/remove', methods=['DELETE'])
-@user_required
 @jwt_required()
+@user_required
 def remove_cart_item():
     """Remove an item from the cart."""
     data = request.json
@@ -57,6 +57,7 @@ def remove_cart_item():
 
 @cart_blueprint.route('/cart-items/increment', methods=['PUT'])
 @jwt_required()
+@user_required
 def increment_cart_item():
     """Increment the quantity of a cart item."""
     data = request.json
@@ -69,8 +70,8 @@ def increment_cart_item():
 
 
 @cart_blueprint.route('/cart-items/decrement', methods=['PUT'])
-@user_required
 @jwt_required()
+@user_required
 def decrement_cart_item():
     """Decrement the quantity of a cart item."""
     data = request.json
@@ -84,3 +85,14 @@ def decrement_cart_item():
         return jsonify({'message': 'Item quantity decreased successfully'}), 200
     else:
         return jsonify({'error': 'Cannot decrement item quantity below 1'}), 400
+    
+
+@cart_blueprint.route('/cart-items/<int:medicine_id>', methods=['GET'])
+@jwt_required()
+@user_required
+def get_cart_item(medicine_id):
+    user_id=get_jwt_identity()['id']
+    cart_item = CartItem.query.filter_by(user_id=user_id, medicine_id=medicine_id).first()
+    if cart_item:
+        return jsonify({'quantity': cart_item.quantity}), 200
+    return jsonify({'quantity': 0}), 200

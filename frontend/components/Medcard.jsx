@@ -97,7 +97,7 @@ const Medcard = ({ medicine }) => {
                         alt="Medicine_Image"
                         className=' rounded-lg min-h-full w-full object-contain lg:object-cover' // Added rounded corners and object-cover for image scaling
                     />
-                    <Addcart/>
+                    <Addcart medicineId={medicine.id}/>
                 </div>
                 
             </div>
