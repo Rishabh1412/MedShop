@@ -256,9 +256,11 @@ class CartItem(db.Model):
         return CartItem.query.filter_by(user_id=user_id).all()
 
     def to_dict(self):
+        medicine_name = Medicine.query.get(self.medicine_id).name if self.medicine_id else "Unknown"
         return {
             'id': self.id,
             'user_id': self.user_id,
+            'medicine_name':medicine_name,
             'medicine_id': self.medicine_id,
             'quantity': self.quantity,
             'price_per_unit': self.price_per_unit,

@@ -23,8 +23,8 @@ const Layout = ({ children }) => {
         const pathname = usePathname();
         return (
             <div className="flex bg-white h-screen">
-                <section className='lg:hidden bg-transparent absolute bottom-2 left-1/2 transform -translate-x-1/2 shadow-md z-40 flex justify-center items-center w-full'>
-                    <div className='bg-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.3)] flex gap-1 py-2 px-11 items-center w-fit'>
+                <section className='lg:hidden bg-white border py-2 rounded-t-md absolute bottom-0 left-1/2 transform -translate-x-1/2 shadow-md z-40 flex justify-center items-center w-full'>
+                    <div className='bg-white flex gap-5 items-center w-100'>
                         {/* First Icon for Home */}
                         <Link href={'/home'}><div
                             className={`${pathname === '/home' ? 'text-add bg-lime-300/30 text-bold active:border-black' : 'text-gray-500'
