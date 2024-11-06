@@ -64,7 +64,7 @@ def increment_cart_item():
     current_user_id = get_jwt_identity()['id']
     medicine_id = data.get('medicine_id')
 
-    CartItem.plus_item(current_user_id, medicine_id, quantity=1)
+    CartItem.plus_item(current_user_id, medicine_id)
 
     return jsonify({'message': 'Item quantity increased successfully'}), 200
 

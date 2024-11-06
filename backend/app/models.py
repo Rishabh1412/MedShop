@@ -236,11 +236,11 @@ class CartItem(db.Model):
         db.session.commit()
 
     @staticmethod
-    def plus_item(user_id, medicine_id, quantity):
+    def plus_item(user_id, medicine_id):
         cart_item = CartItem.query.filter_by(user_id=user_id, medicine_id=medicine_id).first()
         if cart_item:
             cart_item.quantity = cart_item.quantity+1
-            cart_item.total_price = quantity * cart_item.price_per_unit
+            cart_item.total_price = cart_item.quantity * cart_item.price_per_unit
             db.session.commit()
     
     @staticmethod

@@ -30,8 +30,8 @@ const Medcard = ({ medicine }) => {
                 <div className="lg:ml-4 ml-0 p-2 w-2/3 min-h-full"> {/* Removed relative positioning from here */}
                     
                     <div className='flex-col justify-between'>
-                        <Drawer>
-                            <DrawerTrigger>
+                        
+                            
                                 <h2 className="text-lg font-bold flex gap-2 items-center">{medicine.name}
                                     <Badge variant="" className=" bg-neutral-800 py-1 px-3 text-white text-xs font-semibold hover:bg-neutral-800 cursor-pointer"> {/* Adjusted position to ensure it doesn't overlap with other elements */}
                                         {medicine.category}
@@ -55,20 +55,7 @@ const Medcard = ({ medicine }) => {
                                     </div>
 
                                 </div>
-                            </DrawerTrigger>
-                            <DrawerContent>
-                                <DrawerHeader>
-                                    <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-                                    <DrawerDescription>This action cannot be undone.</DrawerDescription>
-                                </DrawerHeader>
-                                <DrawerFooter>
-                                    <Button>Submit</Button>
-                                    <DrawerClose>
-                                        <Button variant="outline">Cancel</Button>
-                                    </DrawerClose>
-                                </DrawerFooter>
-                            </DrawerContent>
-                        </Drawer>
+                           
                         <div
                             onClick={handleImportantClick} // Attach the click handler
                             className={`flex gap-3 text-sm border w-fit px-3 cursor-pointer rounded-sm mt-2 items-center py-2 
