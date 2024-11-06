@@ -33,27 +33,30 @@ const Cart = () => {
   return (
     <div className='min-h-screen w-full bg-gray-50'>
       <h1 className='font-bold lg:py-3 py-5 text-3xl text-neutral-800 px-4 fixed top-0 w-full bg-lime-200 rounded-b-md shadow-sm z-10'>Your Cart</h1>
-      <div className='pt-24 px-4 grid grid-cols-1 gap-4'>
-        {cartItems.length > 0 ? (
-          cartItems.map((item) => (
+      <div className='flex gap-2 h-100'>
+        <div className='pt-24 px-4 grid grid-cols-1 gap-4'>
+          {cartItems.length > 0 ? (
+            cartItems.map((item) => (
 
-            <Medcard
-              key={item.id}
-              medicine={{
-                id: item.medicine_id,
-                name: item.medicine_name, // Modify this to show the medicine's actual name if available
-                category: 'Medicine Category',         // Provide the category if available
-                rating: 4.5,                           // Provide the rating if available
-                price: item.price_per_unit,
-                description: 'Medicine description',   // Provide the description if available
-                manufacturer: 'Manufacturer Name',     // Provide the manufacturer if available
-              }}
-              quantity={item.quantity} // Pass the quantity for display
-            />
-          ))
-        ) : (
-          <p className='h-100 lg:left-1/2 lg:top-1/2 lg:absolute flex items-center justify-center text-gray-500'>Your cart is empty</p>
-        )}
+              <Medcard
+                key={item.id}
+                medicine={{
+                  id: item.medicine_id,
+                  name: item.medicine_name, // Modify this to show the medicine's actual name if available
+                  category: 'Medicine Category',         // Provide the category if available
+                  rating: 4.5,                           // Provide the rating if available
+                  price: item.price_per_unit,
+                  description: 'Medicine description',   // Provide the description if available
+                  manufacturer: 'Manufacturer Name',     // Provide the manufacturer if available
+                }}
+                quantity={item.quantity} // Pass the quantity for display
+              />
+            ))
+          ) : (
+            <p className='h-100 lg:left-1/2 lg:top-1/2 lg:absolute flex items-center justify-center text-gray-500'>Your cart is empty</p>
+          )}
+        </div>
+        <div className=''></div>
       </div>
     </div>
   );
