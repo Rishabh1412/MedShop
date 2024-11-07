@@ -153,7 +153,7 @@ const Inventory = () => {
 
     fetchshop();
     fetchMedicines();
-  }, []);
+  }, [router]);
 
   const handleMedicineAdded = (newMedicine) => {
     setMedicines((prevMedicines) => [...prevMedicines, newMedicine]);
@@ -256,7 +256,7 @@ const Inventory = () => {
                             <DialogHeader>
                               <DialogTitle>Edit Quantity</DialogTitle>
                               <DialogDescription>
-                                Make changes to your medcine's quantity here. Click save when you're done.
+                                Make changes to your medcine&apos;s quantity here. Click save when you&apos;re done.
                               </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-2 py-4">

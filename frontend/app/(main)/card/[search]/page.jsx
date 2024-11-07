@@ -47,7 +47,7 @@ const Card = () => {
       
       <div className='p-4'>
       <div className="">
-        <h1 className='font-semibold pb-2 text-neutral-700'>Results for "{decodedSearchTerm}".</h1>
+          <h1 className='font-semibold pb-2 text-neutral-700'>Results for &quot;{decodedSearchTerm}&quot;.</h1>
 
         {results.shops.length > 0 && (
           <div>

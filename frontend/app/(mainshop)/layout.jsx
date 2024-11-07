@@ -44,7 +44,7 @@ const Layout = ({ children }) => {
         };
 
         fetchUser();
-    }, []);
+    }, [router]);
 
     
     const handleLogout = async () => {

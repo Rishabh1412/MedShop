@@ -74,7 +74,7 @@ export default function LoginShopPage() {
                     <div className="flex justify-between items-center mt-4">
                         <div className="text-sm">
                             <Link href="/signupshop" className="text-blue-500 hover:text-blue-700">
-                                Don't have an account? Signup
+                                Don&apos;t have an account? Signup
                             </Link>
                         </div>
                     </div>
