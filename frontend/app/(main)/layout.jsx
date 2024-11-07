@@ -19,6 +19,31 @@ import {
 
 
 const Layout = ({ children }) => {
+    const handleLogout = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Get token from localStorage
+            const response = await fetch('http://localhost:5000/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                // Successfully logged out, clear the token from localStorage
+                localStorage.removeItem('token');
+                console.log('Logout successful');
+
+                // Redirect the user to a login page or home page after logging out
+                window.location.href = '/login'; // Or use React Router
+            } else {
+                console.log('Failed to log out');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
 
         const pathname = usePathname();
         return (
@@ -71,36 +96,6 @@ const Layout = ({ children }) => {
                         </div>
                         </Link>
 
-                        {/* Third Icon for Track Order */}
-                        <Link href={'/track'}>
-                            <div
-                                className={`${pathname === '/track' ? 'text-add bg-lime-300/30 text-bold active:border-black' : 'text-gray-500'
-                                    } transition-all duration-100 p-3 rounded-lg hover:bg-primary hover:bg-opacity-10 flex flex-col gap-2 px-5 items-center justify-start`}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    className="h-6 w-6"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                    />
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                                    />
-                                </svg>
-                                <p className={`text-[9px] text-black ${pathname === '/track' ? 'font-semibold' : 'text-gray-500'}`}>
-                                    Track
-                                </p>
-                            </div>
-                        </Link>
                         <Link href={'/cart'}>
                             <div
                                 className={`${pathname === '/cart' ? 'text-add bg-lime-300/30 text-bold active:border-black' : 'text-gray-500'
@@ -179,35 +174,7 @@ const Layout = ({ children }) => {
                         </Link>
 
                         {/* Third Icon for Track Order */}
-                        <Link href={'/track'}>
-                            <div
-                                className={`${pathname === '/track' ? 'text-add bg-lime-300/30 text-bold active:border-black' : 'text-gray-500'
-                                    } transition-all duration-100 p-3 rounded-lg hover:bg-primary hover:bg-opacity-10 flex gap-2 px-5 items-center justify-start`}
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    className="h-6 w-6"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                    />
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                                    />
-                                </svg>
-                                <p className={`text-sm text-black ${pathname === '/track' ? 'font-semibold' : 'text-gray-500'}`}>
-                                    Track
-                                </p>
-                            </div>
-                        </Link>
+                        
                         <Link href={'/cart'}>
                             <div
                                 className={`${pathname === '/cart' ? 'text-add bg-lime-300/30 text-bold active:border-black' : 'text-gray-500'
@@ -246,17 +213,16 @@ const Layout = ({ children }) => {
                             </HoverCard>
                             <SheetContent>
                                 <SheetHeader>
-                                    <SheetTitle>Are you absolutely sure?</SheetTitle>
+                                    <SheetTitle>...</SheetTitle>
                                     <SheetDescription>
-                                        This action cannot be undone. This will permanently delete your account
-                                        and remove your data from our servers.
+                                        
                                     </SheetDescription>
                                 </SheetHeader>
                             </SheetContent>
                         </Sheet>
 
 
-                        <Button className='bg-red-400 rounded-sm p-2'>LogOut</Button>
+                        <Button className='bg-red-400 rounded-sm p-2' onClick={handleLogout}>LogOut</Button>
                     </div>
 
                 </section>

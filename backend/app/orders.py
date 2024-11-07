@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from .models import db, UserDeliveryLocation, Order, CartItem, OrderItem, User
+from .models import db, UserDeliveryLocation, Order, CartItem, OrderItem, User,Medicine,Shop
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.routes import user_required
+from app.routes import user_required,shopkeeper_required
 from sqlalchemy.exc import SQLAlchemyError
 
 orders_blueprint = Blueprint('orders', __name__)
@@ -84,3 +84,74 @@ def add_delivery_location():
 
     return jsonify({"message": "Delivery location added successfully!"}), 201
 
+
+
+@orders_blueprint.route('/user/orders', methods=['GET'])
+@jwt_required()
+@user_required
+def get_user_orders():
+    user_id = get_jwt_identity()['id']
+    orders = Order.query.filter_by(user_id=user_id).all()
+
+    orders_data = []
+    for order in orders:
+        order_data = {
+            'order_id': order.id,
+            'order_status': order.order_status,
+            'ordered_at': order.ordered_at,
+            'total_amount': order.total_amount,
+            'items': [
+                {
+                    'medicine_name': Medicine.query.filter_by(id=item.medicine_id).first().name,
+                    'medicine_id': item.medicine_id,
+                    'quantity': item.quantity,
+                    'price_per_unit': item.price_per_unit,
+                    'total_price': item.total_price
+                }
+                for item in order.order_items
+            ]
+        }
+        orders_data.append(order_data)
+
+    return jsonify({'orders': orders_data}), 200
+
+
+
+@orders_blueprint.route('/shop/orders', methods=['GET'])
+@jwt_required()
+@shopkeeper_required
+def get_shop_orders():
+    # Get the shopkeeper_id from the JWT token (or the user context)
+    shopkeeper_id = get_jwt_identity()['id']
+    
+    # Fetch the shop_id by the shopkeeper_id
+    shop = Shop.query.filter_by(shopkeeper_id=shopkeeper_id).first()
+    if not shop:
+        return jsonify({'error': 'Shop not found for this shopkeeper'}), 404
+
+    shop_id = shop.id
+
+    # Fetch orders for the shop
+    orders = Order.query.filter_by(shop_id=shop_id).all()
+
+    orders_data = []
+    for order in orders:
+        order_data = {
+            'order_id': order.id,
+            'order_status': order.order_status,
+            'ordered_at': order.ordered_at,
+            'total_amount': order.total_amount,
+            'items': [
+                {
+                    'medicine_id': item.medicine_id,
+                    'medicine_name': Medicine.query.get(item.medicine_id).name,  
+                    'quantity': item.quantity,
+                    'price_per_unit': item.price_per_unit,
+                    'total_price': item.total_price
+                }
+                for item in order.order_items
+            ]
+        }
+        orders_data.append(order_data)
+
+    return jsonify({'orders': orders_data}), 200
