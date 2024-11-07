@@ -44,7 +44,7 @@ const SearchBox = () => {
                 setHistory(response.data.history);
             })
             .catch(error => {
-                console.error('Error fetching search history:', error);
+                console.log('Error fetching search history:', error);
             });
     }, []);
 

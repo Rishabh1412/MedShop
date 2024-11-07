@@ -1,7 +1,9 @@
 'use client'
 import Medcard from '@/components/Medcard';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -59,8 +61,8 @@ const Cart = () => {
             <p className='h-full w-full lg:absolute flex items-center text-center justify-center text-gray-500'>Your cart is empty</p>
           )}
         </div>
-        <div className='proceed-to-pay border bg-white lg:block hidden rounded-md px-4 py-2 fixed right-12'>
-          <div className='relative'>
+        <div className='proceed-to-pay border  bg-white lg:block hidden rounded-md px-4 py-2 fixed right-12'>
+          <div className='relative min-h-[500px]'>
             <div className="w-full h-full  p-4 flex flex-col items-center min-w-96 max-h-[500px] overflow-auto">
               <strong className="text-xl font-bold mb-4 text-center">Total Items</strong>
 
@@ -87,7 +89,7 @@ const Cart = () => {
                       </span>
                     </div>
                     <div className='w-full'>
-                      <Button className='w-full bg-yellow-300 rounded-[3px] hover:bg-yellow-600 font-bold'>Proceed to pay { }</Button>
+                      <Link href={'/place-order'}><Button className='w-full bg-yellow-300 rounded-[3px] hover:bg-yellow-600 font-bold'>Proceed to pay</Button></Link>
                     </div>
                   </div>
                 </div>
@@ -95,16 +97,18 @@ const Cart = () => {
                 <p className="text-gray-500">No items in cart</p>
               )}
             </div>
-            
+
           </div>
         </div>
         <div className="fixed bottom-20 z-50 w-full left-0 right-0 bg-red p-1 lg:hidden bloc">
-          <Button
-            onClick={toggleDrawer}
-            className="w-full bg-yellow-300 rounded-[3px] py-4 hover:bg-yellow-600 font-bold"
-          >
-            Proceed to Pay
-          </Button>
+          
+            <button
+              onClick={toggleDrawer}
+              className="w-full bg-yellow-300 rounded-[7px] py-4 hover:bg-yellow-600 font-bold"
+            >
+              Proceed to Pay
+            </button>
+          
         </div>
 
         {/* Drawer for Mobile */}
@@ -134,19 +138,21 @@ const Cart = () => {
                       Rs.{cartItems.reduce((acc, item) => acc + item.total_price, 0).toFixed(2)}
                     </span>
                   </div>
-                  <Button className="w-full bg-yellow-300 rounded-[3px] hover:bg-yellow-600 font-bold mt-4">
+                  <Link href={'/place-order'}>
+                  <button className="w-full bg-yellow-300 rounded-[3px] py-3 hover:bg-yellow-600 font-bold mt-4">
                     Confirm Payment
-                  </Button>
+                  </button>
+                  </Link>
                 </div>
               ) : (
                 <p className="text-gray-500">No items in cart</p>
               )}
-              <Button
+              <button
                 onClick={toggleDrawer}
-                className="w-full mt-4 text-gray-600 border bg-white rounded-[3px] active:bg-gray-400 hover:bg-white font-bold"
+                className="w-full mt-4 text-gray-800 border py-3 shadow-none bg-white rounded-[3px] active:bg-gray-400 hover:bg-white font-bold"
               >
                 Close
-              </Button>
+              </button>
             </div>
           </div>
         )}

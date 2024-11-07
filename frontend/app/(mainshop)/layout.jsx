@@ -36,10 +36,10 @@ const Layout = ({ children }) => {
                     console.log(response.data);
                     setUser(response.data);  // Save the whole user object
                 } else {
-                    console.error('No user data found in response');
+                    console.log('No user data found in response');
                 }
             } catch (error) {
-                console.error('Failed to fetch user data', error);
+                console.log('Failed to fetch user data', error);
             }
         };
 
