@@ -120,14 +120,44 @@ class Medicine(db.Model):
 class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User who placed the order
-    shop_id = db.Column(db.Integer, db.ForeignKey('shops.id'), nullable=False)  # Shop fulfilling the order
-    order_status = db.Column(db.String(50), nullable=False, default='pending')  # e.g., pending, completed, canceled
-    ordered_at = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)  # Timestamp
-    total_amount = db.Column(db.Float, nullable=False, default=0)  # Total order amount
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    shop_id = db.Column(db.Integer, db.ForeignKey('shops.id'), nullable=False)
+    order_status = db.Column(db.String(50), nullable=False, default='pending')
+    ordered_at = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+    total_amount = db.Column(db.Float, nullable=False, default=0)
+
+    # Correct foreign key to UserDeliveryLocation
+    user_delivery_location_id = db.Column(db.Integer, db.ForeignKey('user_delivery_locations.id'), nullable=False)
 
     # Relationship with order items
     order_items = db.relationship('OrderItem', backref='order', lazy=True)
+
+    @staticmethod
+    def place_order(user_id, address_id, total_amount, shop_id):
+        """Place an order with all items in the user's cart."""
+        new_order = Order(
+            user_id=user_id,
+            order_status='pending',
+            total_amount=total_amount,
+            user_delivery_location_id=address_id,
+            shop_id=shop_id  # Add shop_id
+        )
+        db.session.add(new_order)
+        db.session.commit()
+        return new_order
+
+
+
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'shop_id': self.shop_id,
+            'order_status': self.order_status,
+            'total_amount': self.total_amount,
+            'ordered_at': self.ordered_at
+        }
 
 
 class OrderItem(db.Model):
@@ -139,18 +169,47 @@ class OrderItem(db.Model):
     price_per_unit = db.Column(db.Float, nullable=False)  # The price at the time of order
     total_price = db.Column(db.Float, nullable=False)  # quantity * price_per_unit
 
+    @staticmethod
+    def add_order_items(order_id, cart_items):
+        """Add all items from cart as order items to the order."""
+        for cart_item in cart_items:
+            new_order_item = OrderItem(
+                order_id=order_id,
+                medicine_id=cart_item.medicine_id,
+                quantity=cart_item.quantity,
+                price_per_unit=cart_item.price_per_unit,
+                total_price=cart_item.total_price
+            )
+            db.session.add(new_order_item)
+        db.session.commit()
+
 
 class UserDeliveryLocation(db.Model):
     __tablename__ = 'user_delivery_locations'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     address = db.Column(db.String(255), nullable=False)
-    city = db.Column(db.String(50), nullable=False)
-    state = db.Column(db.String(50), nullable=False)
+    city = db.Column(db.String(100), nullable=False)
+    state = db.Column(db.String(100), nullable=False)
     pincode = db.Column(db.String(10), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
 
-    # Relationship with users
-    user = db.relationship('User', backref='delivery_locations',lazy=True)
+    user = db.relationship('User', backref=db.backref('delivery_locations', lazy=True))
+
+
+    @staticmethod
+    def get_user_all_addresses(user_id):
+        return UserDeliveryLocation.query.filter_by(user_id=user_id).all()
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'address': self.address,
+            'city': self.city,
+            'state': self.state,
+            'pincode': self.pincode,
+            'phone':self.phone
+        }
 
 
 class SearchHistory(db.Model):

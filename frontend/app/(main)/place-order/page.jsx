@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 const Placeorder = () => {
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState(null);
+    const [shopId, setShopId] = useState(1); // You can update this based on your app's logic
     const router = useRouter();
 
     useEffect(() => {
@@ -42,11 +43,16 @@ const Placeorder = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ address_id: selectedAddress }), // Ensure selectedAddress is being passed correctly
+                body: JSON.stringify({
+                    address_id: selectedAddress,
+                    shop_id: shopId, // Send the shop_id along with address_id
+                }),
             });
             if (response.ok) {
                 const data = await response.json();
                 console.log('Order placed:', data);
+                // Optionally, redirect to another page (e.g., order confirmation)
+                router.push('/cart');
             } else {
                 console.log('Failed to place order');
             }
@@ -54,7 +60,6 @@ const Placeorder = () => {
             console.log('Error placing order:', error);
         }
     };
-
 
     return (
         <div className='h-full w-full bg-neutral-50 mx-auto p-4'>
